@@ -2,7 +2,7 @@ pipeline {
     agent any
     
     environment {
-        DOCKER_IMAGE = 'baymax786/my-frontend'
+        DOCKER_IMAGE = 'kamalee07/my-frontend'
         DOCKER_TAG = "${BUILD_NUMBER}"
     }
     
@@ -10,7 +10,7 @@ pipeline {
         stage('Checkout Code') {
             steps {
                 git branch: 'main', 
-                    url: ''
+                    url: 'https://github.com/kamaleek07/my-frontend-app.git'
             }
         }
         
@@ -49,9 +49,9 @@ pipeline {
                             cd my-frontend-manifests
                             
                             # Update the image tag in deployment.yaml
-                            sed -i "s|image: baymax786/my-frontend:.*|image: baymax786/my-frontend:${DOCKER_TAG}|g" deployment.yaml
+                            sed -i "s|image: kamalee07/my-frontend:.*|image: kamalee07/my-frontend:${DOCKER_TAG}|g" deployment.yaml
                             
-                            git config user.email "lucy2113@gmail.com"
+                            git config user.email "kamaleek07@gmail.com"
                             git config user.name "Jenkins"
                             
                             git add deployment.yaml
