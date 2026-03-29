@@ -7,6 +7,7 @@ pipeline {
     }
     
     stages {
+        
         stage('Checkout Code') {
             steps {
                 git branch: 'master', 
@@ -37,27 +38,37 @@ pipeline {
         stage('Update Manifest Repository') {
             steps {
                 script {
-                    withCredentials([usernamePassword(credentialsId: 'github-credentials', 
-                                                    usernameVariable: 'GITHUB_USERNAME', 
-                                                    passwordVariable: 'GITHUB_TOKEN')]) {
-                        sh """
-                            # Remove existing directory if it exists
+                    withCredentials([usernamePassword(
+                        credentialsId: 'github-credentials', 
+                        usernameVariable: 'GITHUB_USERNAME', 
+                        passwordVariable: 'GITHUB_TOKEN'
+                    )]) {
+                        
+                        sh '''
+                            # Remove old folder
                             rm -rf my-frontend-manifests
                             
-                            # Clone fresh
-                            git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git 
+                            # Clone WITHOUT token (safe)
+                            git clone https://github.com/$GITHUB_USERNAME/my-frontend-manifests.git
                             cd my-frontend-manifests
                             
-                            # Update the image tag in deployment.yaml
+                            # Update image tag
                             sed -i "s|image: kamalee07/my-frontend:.*|image: kamalee07/my-frontend:${DOCKER_TAG}|g" deployment.yaml
                             
+                            # Git config
                             git config user.email "kamaleek07@gmail.com"
                             git config user.name "Jenkins"
                             
+                            # Commit changes
                             git add deployment.yaml
-                            git commit -m "Update image to version ${DOCKER_TAG}"
-                            git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git master
-                        """
+                            git commit -m "Update image to version ${DOCKER_TAG}" || echo "No changes to commit"
+                            
+                            # Set authenticated remote (SECURE)
+                            git remote set-url origin https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com/$GITHUB_USERNAME/my-frontend-manifests.git
+                            
+                            # Push
+                            git push origin master
+                        '''
                     }
                 }
             }
@@ -66,7 +77,10 @@ pipeline {
     
     post {
         success {
-            echo 'Pipeline completed successfully!'
+            echo '✅ Pipeline completed successfully!'
+        }
+        failure {
+            echo '❌ Pipeline failed. Check logs.'
         }
     }
 }
