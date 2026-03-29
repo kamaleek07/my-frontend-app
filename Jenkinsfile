@@ -42,7 +42,7 @@ pipeline {
                         usernameVariable: 'GITHUB_USERNAME',
                         passwordVariable: 'GITHUB_TOKEN'
                     )]) {
-                        sh '''
+                        sh """
                             rm -rf my-frontend-manifests
                             
                             # ✅ Correct repo URL + correct path
@@ -60,7 +60,7 @@ pipeline {
                             git commit -m "Update image to version ${DOCKER_TAG}" || echo "No changes to commit"
                             
                             git push origin master
-                        '''
+                        """
                     }
                 }
             }
