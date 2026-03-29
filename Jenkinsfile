@@ -45,7 +45,7 @@ pipeline {
                             rm -rf my-frontend-manifests
                             
                             # Clone fresh
-                            git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git
+                            git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git 
                             cd my-frontend-manifests
                             
                             # Update the image tag in deployment.yaml
@@ -56,7 +56,7 @@ pipeline {
                             
                             git add deployment.yaml
                             git commit -m "Update image to version ${DOCKER_TAG}"
-                            git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git main
+                            git push https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git master
                         """
                     }
                 }
