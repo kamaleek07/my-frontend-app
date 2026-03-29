@@ -46,7 +46,7 @@ pipeline {
                             rm -rf my-frontend-manifests
                             
                             # ✅ Correct repo URL + correct path
-                            git clone https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git
+                            git clone "https://${GITHUB_USERNAME}:${GITHUB_TOKEN}@github.com/${GITHUB_USERNAME}/my-frontend-manifests.git"
                             
                             cd my-frontend-manifests
                             
